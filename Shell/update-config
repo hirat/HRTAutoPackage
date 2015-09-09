@@ -1,0 +1,123 @@
+#!/bin/bash
+
+#--------------------------------------------
+# 功能：更新配置文件
+# 使用说明：
+#		编译project
+#			ipa-build <project directory> [-c <project configuration>] [-o <ipa output directory>] [-t <target name>] [-n] [-p <platform identifier>]
+#
+# 参数说明：-v NAME          version
+#		-b NAME				build
+#		-n NAME             name
+#
+# 作者：Hirat
+# E-mail: hirats@gmail.com
+# 创建日期：2015/09/09
+#--------------------------------------------
+
+if [ $# -lt 1 ];then
+    echo "Error! Should enter the root directory of xcode project after the ipa-build command."
+    exit 2
+fi
+
+if [ ! -d $1 ];then
+    echo "Error! The first param must be a directory."
+    exit 2
+fi
+
+#工程绝对路径
+cd $1
+project_path=$(pwd)
+
+param_pattern=":b:v:n:"
+OPTIND=2
+while getopts $param_pattern optname
+  do
+    case "$optname" in       
+	  "b")
+		tmp_optind=$OPTIND
+		tmp_optname=$optname
+		tmp_optarg=$OPTARG
+
+		OPTIND=$OPTIND-1
+		if getopts $param_pattern optname ;then
+			echo  "Error argument value for option $tmp_optname"
+			exit 2
+		fi
+		OPTIND=$tmp_optind
+
+		build_version=$tmp_optarg
+		
+        ;;
+       "v")
+		tmp_optind=$OPTIND
+		tmp_optname=$optname
+		tmp_optarg=$OPTARG
+
+		OPTIND=$OPTIND-1
+		if getopts $param_pattern optname ;then
+			echo  "Error argument value for option $tmp_optname"
+			exit 2
+		fi
+		OPTIND=$tmp_optind
+
+		bundle_version=$tmp_optarg
+		
+        ;;
+       "n")
+		tmp_optind=$OPTIND
+		tmp_optname=$optname
+		tmp_optarg=$OPTARG
+
+		OPTIND=$OPTIND-1
+		if getopts $param_pattern optname ;then
+			echo  "Error argument value for option $tmp_optname"
+			exit 2
+		fi
+		OPTIND=$tmp_optind
+
+		dislplay_name=$tmp_optarg
+		
+        ;;
+
+
+      "?")
+        echo "Error! Unknown option $OPTARG"
+		exit 2
+        ;;
+      ":")
+        echo "Error! No argument value for option $OPTARG"
+		exit 2
+        ;;
+      *)
+      # Should not occur
+        echo "Error! Unknown error while processing options"
+		exit 2
+        ;;
+    esac
+  done
+
+# 配置 Info.plist
+##############################################################
+example_info_in=${project_path}/Templates/Info.plist
+example_info_tmp=${project_path}/Templates/Info.tmp
+example_info_plist=${project_path}/Example/Info.plist
+
+sed "s/BUNDLE_VERSION/$bundle_version/g" $example_info_in > $example_info_tmp
+sed "s/BUNDLE_BUILD/$build_version/g" $example_info_tmp > $example_info_tmp.tmp
+mv $example_info_tmp.tmp $example_info_tmp
+
+mv $example_info_tmp $example_info_plist
+##############################################################
+
+# 配置 InfoPlist.strings
+##############################################################
+infoplist_in=${project_path}/Templates/InfoPlist.strings
+infoplist_tmp=${project_path}/Templates/InfoPlist.tmp
+info_plist=${project_path}/Example/InfoPlist.strings
+
+sed "s/DISPLAY_NAME/$dislplay_name/g" $infoplist_in > $infoplist_tmp
+
+mv $infoplist_tmp $info_plist
+##############################################################
+

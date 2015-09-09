@@ -1,0 +1,40 @@
+#!/bin/bash
+
+#获取shell文件所在的绝对路径
+current_path=$(pwd)
+cd $current_path
+
+#删除ipa目录
+if [ -d ./ipa ];then
+	rm -rf ipa
+fi
+mkdir ipa
+
+#获取配置文件
+config_file=$current_path/config
+
+for line in `cat $config_file`
+do
+	arr=($(echo $line | tr '|' ' ' | tr -s ' '))
+	project_id=${arr[0]}
+	project_target=${arr[1]}
+	project_display_name=${arr[2]}
+	project_version=${arr[3]}
+	project_build=${arr[4]}
+
+	echo "project_id: $project_id"
+	echo "project_target: $project_target"
+	echo "project_version: $project_version"
+	echo "project_build: $project_build"
+
+    update_config_cmd=${current_path}'/shell/update-config '${current_path}' -b '${project_build}' -v '${project_version}' -n '${project_display_name}''
+
+    echo "$update_config_cmd"
+    ${update_config_cmd}
+
+    build_cmd=${current_path}'/Shell/ipa-build '${current_path}' -s Example -o ipa'
+
+    echo "$build_cmd"
+    ${build_cmd}
+
+done

@@ -1,0 +1,9 @@
+/* 
+  InfoPlist.strings
+  Example
+
+  Created by Hirat on 15/9/9.
+  Copyright (c) 2015年 Hirat. All rights reserved.
+*/
+
+"CFBundleDisplayName" = "测试1";

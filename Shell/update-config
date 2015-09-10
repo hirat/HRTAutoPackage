@@ -4,7 +4,7 @@
 # 功能：更新配置文件
 # 使用说明：
 #		编译project
-#			ipa-build <project directory> [-c <project configuration>] [-o <ipa output directory>] [-t <target name>] [-n] [-p <platform identifier>]
+#			update-config <project directory> [-v <project bundle version>] [-b <project build version>] [-n <display name>]
 #
 # 参数说明：-v NAME          version
 #		-b NAME				build

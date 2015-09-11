@@ -32,6 +32,13 @@ do
     echo "$update_config_cmd"
     ${update_config_cmd}
 
+   	resource_from=$current_path'/Targets/'$project_target'/Images.xcassets'
+	to_path=${current_path}/Example
+	update_resource_cmd='rsync -av --progress '${resource_from}' '${to_path}''
+
+	echo "$update_resource_cmd"
+	${update_resource_cmd}
+
     build_cmd=${current_path}'/Shell/ipa-build '${current_path}' -s Example -o ipa'
 
     echo "$build_cmd"
